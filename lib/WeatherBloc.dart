@@ -10,7 +10,6 @@ class WeatherEvent extends Equatable {
 }
 
 class FetchWeather extends  WeatherEvent {
-
   final city;
   FetchWeather(this.city);
 
@@ -41,6 +40,9 @@ class WeatherIsLoading  extends WeatherState {
 class WeatherIsLoaded extends WeatherState {
    final _weather ;
    WeatherIsLoaded(this._weather);
+
+   WeatherModel get getWeather => _weather;
+
    @override
    // TODO: implement props
    List<Object> get props => [_weather];
@@ -62,17 +64,18 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   @override
   Stream<WeatherState> mapEventToState(WeatherEvent event) async*{
-    // TevODO: implement mapEventToState
+    // TODO: implement mapEventToState
     if(event is FetchWeather){
       yield WeatherIsLoading();
-      try {
+
+      try{
         WeatherModel weather = await weatherRepo.getWeather(event.city);
         yield WeatherIsLoaded(weather);
-      } catch(_) {
+      }catch(_){
         print(_);
         yield WeatherIsNotLoaded();
       }
-    } else if (event is ResetWeather) {
+    }else if(event is ResetWeather){
       yield WeatherIsNotSearched();
     }
   }
